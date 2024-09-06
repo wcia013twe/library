@@ -1,7 +1,7 @@
 // const myLibrary = [];
 const myLibrary = [];
 
-function Book(title, author, year, status) {
+function Book(title, author, date, status) {
     this.title = title;
     this.author = author;
     this.date = date;
@@ -27,8 +27,14 @@ function render() {
         let book = myLibrary[i];
         let bookEL = document.createElement("div");
         bookEL.setAttribute("class", "card");
+        if (!book.author || !book.title){
+            continue;
+        }
         bookEL.innerHTML = `
-            <div class="book-picture"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="200" height="200" viewBox="0 0 256 256" xml:space="preserve">
+            <div class="delete-btn" onclick="myLibrary.splice(${i}, 1); render();">X</div>
+            <div class="card-header">
+                <h3 class="title">${book.title}</h3>
+                            <div class="book-picture"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="150" height="150" viewBox="0 0 256 256" xml:space="preserve">
 
             <defs>
             </defs>
@@ -43,19 +49,28 @@ function render() {
             </g>
             </svg>
             </div>
-            
-            <div class="card-header">
-                <h3 class="title">${book.title}</h3>
                 <h5 class="author">${book.author}</h5>
             </div>
             <div class="card-body">
-                <p>Published ${book.year}</p>
-                <p class="status">${book.status ? "Read" : "Not Read"}</p>
-            </div>
+ 
+    <p>Published ${book.date}</p>
+    <button class="read-btn ${book.status ? 'read' : 'not-read'}" onclick="toggleStatus(${i})">
+        ${book.status ? "Read" : "Not Read"}
+    </button>
+</div>
             `
         libraryEl.appendChild(bookEL);
     }
 }
+
+function toggleStatus(bookIndex) {
+    // Toggle the status of the book
+    myLibrary[bookIndex].status = !myLibrary[bookIndex].status;
+    
+    // Re-render the library to reflect the changes
+    render();
+}
+
 // addBookToLibrary('To Kill a Mockingbird', 'Harper Lee', 1960);
 function closeDialog() {
     let newBookForm = document.querySelector('#new-book-form');
